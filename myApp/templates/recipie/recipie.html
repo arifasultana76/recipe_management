@@ -1,0 +1,162 @@
+{% extends 'master/base.html' %}
+
+{% block body %}
+    
+
+    
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Recipe List</title>
+
+<style>
+/* Scoped to recipe list only */
+.recipe-list-box {
+  max-width: 1000px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.recipe-list-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.recipe-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.recipe-table th,
+.recipe-table td {
+  text-align: left;
+  padding: 12px 15px;
+}
+
+.recipe-table th {
+  background: #ff7e5f;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.recipe-table tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.recipe-table tr:hover {
+  background: #ffe5d6;
+  transition: 0.3s;
+}
+
+.recipe-img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 5px;
+  transition: 0.3s;
+}
+
+.view-btn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.view-btn:hover {
+  background-color: #45a049;
+}
+
+.edit-btn {
+  background-color: #2196f3;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #1976d2;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+</style>
+</head>
+
+<body>
+
+<div class="recipe-list-box">
+  <h2>Recipe List</h2>
+    {% include 'master/messages.html' %}
+  <a href="{% url 'addrecipie' %}" class="action-btn view-btn">Add recipie</a>
+
+  <table class="recipe-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Created By</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i in recipies %}
+      <tr>
+        <td>{{ i.id }}</td>
+        <td>
+          {% if i.image %}
+            <img src="{{ i.image.url }}" class="recipe-img">
+          {% else %}
+            <span style="color:#777;">No Image</span>
+          {% endif %}
+        </td>
+        <td>{{ i.title }}</td>
+        <td>{{ i.category.name }}</td>
+        <td>{{ i.created_by.full_name }}</td>
+        <td>{{ i.created_at }}</td>
+        <td>{{ i.updated_at }}</td>
+        <td>
+          <a href="{% url 'view_recipe' i.id %}" class="action-btn view-btn">View</a>
+          
+            {% if i.created_by == request.user %}
+          <a href="{% url 'edit_recipe' i.id %}" class="action-btn edit-btn">Edit</a>
+          <a href="{% url 'delete_recipe' i.id %}" class="action-btn delete-btn">Delete</a>
+          {% endif %}
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" style="text-align:center; color:#777;">No recipes found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
+
+{% endblock body %}
